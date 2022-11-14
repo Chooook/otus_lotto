@@ -13,8 +13,6 @@ class Host:
     def play(self):
         print('Начинаем нашу игру!')
         self._create_players(self._get_players_amount())
-        print(self._players_list[0]._cards==self._players_list[1]._cards)
-        # Проверка
         while 1 == 1:
             self._ask()
             self._next_round()
@@ -47,7 +45,8 @@ class Host:
 
     def _next_round(self):
         num = self._nums_list.pop(0)
-        message = f'{NUMS_DICT.get(str(num))}! {num}'
+        num_name = NUMS_DICT.get(str(num))
+        message = f'{num_name}! {num}' if num_name else f'{num}!'
         print(message)
         for player in self._players_list:
             player.check_cards(num)
@@ -63,24 +62,22 @@ class Host:
                 self._ask()
 
 
-@dataclass
 class Player:
-    _type: str
-    name: str
-    _cards = []
-    # TODO: Неправильно создаются игроки, первый игрок забирает все карточки
-
-    def __post_init__(self):
-        self._type = 'Компьютер' if self._type == '2' else 'Человек'
-        self._get_cards()
-        print(self._cards)
+    def __init__(
+            self,
+            _type: str,
+            name: str,
+    ):
+        self._type = 'Компьютер' if _type == '2' else 'Человек'
+        self.name = name
+        self._cards = self._get_cards()
 
     def __repr__(self):
         return f'{self._type}: {self.name}'
 
-    def _get_cards(self):
-        for i in range(3):
-            self._cards.append(Card())
+    @staticmethod
+    def _get_cards():
+        return [Card() for _ in range(3)]
 
     def check_cards(self, num):
         for card in self._cards:
@@ -110,12 +107,12 @@ class Card:
         for i, line in zip([1, 2, 3], self.lines):
             if number in line:
                 line.remove(number)
+                print(f'Игрок {player} закрыл число {number}\n'
+                      f'Оставшиеся значения {i} линии :\n{line}')
                 if len(line) == 0:
                     print(f'Игрок {player} победил!\n'
                           'ИГРА ОКОНЧЕНА!')
                     sys.exit()
-                print(f'Игрок {player} закрыл число {number}\n'
-                      f'Оставшиеся значения {i} линии :\n{line}')
 
 
 if __name__ == '__main__':
