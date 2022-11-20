@@ -109,7 +109,7 @@ class Person(Player):
         print(self.card)
         if self._ask():
             self.card.del_num(num)
-        elif self.card.check(num):
+        elif num in self.card:
             print(f'{"-"*35}\n'
                   f'Игрок {self.name} не попытался закрыть {num}!\n'
                   f'Это число есть на его карточке!\n'
@@ -130,7 +130,7 @@ class Computer(Player):
         return f'Computer(name={self.name}, card={self.card}'
 
     def check_card(self, num):
-        if self.card.check(num):
+        if num in self.card:
             self.card.del_num(num)
 
 
@@ -164,12 +164,12 @@ class Card:
                 f'line2={self.line2}, '
                 f'line3={self.line3})')
 
-    def check(self, num):
-        if num in self.line1:
+    def __contains__(self, item):
+        if item in self.line1:
             return True
-        if num in self.line2:
+        if item in self.line2:
             return True
-        if num in self.line3:
+        if item in self.line3:
             return True
 
     def check_lines(self):
