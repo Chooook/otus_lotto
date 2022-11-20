@@ -7,7 +7,7 @@ from validations import Validation as Valid
 
 class Game:
     def __init__(self):
-        self._players_list = self._create_players(
+        self._players_list = self._get_players(
             int(self._get_players_amount())
         )
         self.bag = Bag()
@@ -22,7 +22,7 @@ class Game:
         return Valid.players_amount(amount, cls._get_players_amount)
 
     @classmethod
-    def _create_players(cls, amount):
+    def _get_players(cls, amount):
         players = []
         for player_num in range(1, amount + 1):
             print(f'{player_num} игрок:')
