@@ -149,9 +149,9 @@ class Card:
             first_row = f'--- Карточка игрока {self.player} ---'
         if isinstance(self.player, Computer):
             first_row = f'-- Карточка игрока {self.player} --'
-        line1 = [' ' + str(i) if i // 10 == 0 else str(i) for i in self.line1]
-        line2 = [' ' + str(i) if i // 10 == 0 else str(i) for i in self.line2]
-        line3 = [' ' + str(i) if i // 10 == 0 else str(i) for i in self.line3]
+        line1 = [' ' + i if len(i) < 2 else i for i in map(str, self.line1)]
+        line2 = [' ' + i if len(i) < 2 else i for i in map(str, self.line2)]
+        line3 = [' ' + i if len(i) < 2 else i for i in map(str, self.line3)]
         return (f'{first_row}\n'
                 f'{"      ".join(line1)}\n'
                 f'{"      ".join(line2)}\n'
@@ -182,13 +182,13 @@ class Card:
     def del_num(self, num):
         line = None
         if num in self.line1:
-            self.line1.remove(num)
+            self.line1[self.line1.index(num)] = '--'
             line = 'линии 1'
         elif num in self.line2:
-            self.line2.remove(num)
+            self.line2[self.line2.index(num)] = '--'
             line = 'линии 2'
         elif num in self.line3:
-            self.line3.remove(num)
+            self.line3[self.line3.index(num)] = '--'
             line = 'линии 3'
         if line:
             print(f'Игрок {self.player} закрыл {num} на {line}!\n{self}')
