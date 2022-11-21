@@ -13,7 +13,7 @@ class Game:
         self.bag = Bag()
 
     def start(self):
-        print(f'{"-"*35}\nИгра начинается!!!\n{"-"*35}')
+        print(f'{"-" * 35}\nИгра начинается!!!\n{"-" * 35}')
         self._turn()
 
     @classmethod
@@ -64,12 +64,13 @@ class Bag:
     def __str__(self):
         prefix = 'Осталось'
         postfix = 'бочонков'
-        match len(self) % 10:
-            case 1:
-                prefix = 'Остался'
-                postfix = 'бочонок'
-            case 2 | 3 | 4:
-                postfix = 'бочонка'
+        if len(self) != 11 | 12 | 13 | 14:
+            match len(self) % 10:
+                case 1:
+                    prefix = 'Остался'
+                    postfix = 'бочонок'
+                case 2 | 3 | 4:
+                    postfix = 'бочонка'
         return f'{prefix} {len(self)} {postfix}'
 
     def __repr__(self):
@@ -82,9 +83,9 @@ class Bag:
         barrel = self._nums_list.pop(0)
         try:
             text = NUMS_DICT[str(barrel)]
-            text = f'{text}! {barrel}\n{"-"*35}\n{self}\n{"-"*35}'
+            text = f'{text}! {barrel}\n{"-" * 35}\n{self}\n{"-" * 35}'
         except KeyError:
-            text = f'Бочонок номер {barrel}!\n{"-"*35}\n{self}\n{"-"*35}'
+            text = f'Бочонок номер {barrel}!\n{"-" * 35}\n{self}\n{"-" * 35}'
         print(text)
         return barrel
 
@@ -110,12 +111,12 @@ class Person(Player):
         if self._ask():
             self.card.del_num(num)
         elif num in self.card:
-            print(f'{"-"*35}\n'
+            print(f'{"-" * 35}\n'
                   f'Игрок {self.name} не попытался закрыть {num}!\n'
                   f'Это число есть на его карточке!\n'
-                  f'{"-"*35}\n'
+                  f'{"-" * 35}\n'
                   f'Игрок {self.name} проиграл! Игра окончена!\n'
-                  f'{"-"*35}')
+                  f'{"-" * 35}')
             sys.exit()
 
     @classmethod
@@ -194,12 +195,12 @@ class Card:
             print(f'Игрок {self.player} закрыл {num} на {line}!\n{self}')
             self.check_lines()
         else:
-            print(f'{"-"*35}\n'
+            print(f'{"-" * 35}\n'
                   f'Игрок {self.player} попытался закрыть {num}!\n'
                   f'Этого числа нет на его карточке!\n'
-                  f'{"-"*35}\n'
+                  f'{"-" * 35}\n'
                   f'Игрок {self.player} проиграл! Игра окончена!!!'
-                  f'\n{"-"*35}')
+                  f'\n{"-" * 35}')
             sys.exit()
 
 
