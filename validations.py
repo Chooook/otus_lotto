@@ -1,32 +1,29 @@
 class Validation:
     @staticmethod
-    def players_amount(num, func):
+    def players_amount(num):
         try:
             num = int(num)
             if 2 <= num <= 8:
-                return num
+                return True
             raise ValueError
         except ValueError:
             print('Количество игроков указано неверно!')
-            return func()
+            return False
 
     @staticmethod
-    def player_type(_type, func):
+    def player_type(_type):
         try:
             _type = int(_type)
             if _type == 1 or _type == 2:
-                return _type
+                return True
             raise ValueError
         except ValueError:
             print('Тип игрока указан неверно!')
-            return func()
+            return False
 
     @staticmethod
-    def answer(answer, func):
-        if answer == 'y':
+    def answer(answer):
+        if answer == 'y' or answer == 'n':
             return True
-        elif answer == 'n':
-            return False
-        else:
-            print('Варианты ответа: "y" и "n"')
-            return func()
+        print('Варианты ответа: "y" и "n"')
+        return False

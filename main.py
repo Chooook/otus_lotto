@@ -19,7 +19,9 @@ class Game:
     @classmethod
     def _get_players_amount(cls):
         amount = input('Введите количество игроков (от 2 до 8):\n')
-        return Valid.players_amount(amount, cls._get_players_amount)
+        if Valid.players_amount(amount):
+            return int(amount)
+        cls._get_players_amount()
 
     @classmethod
     def _get_players(cls, amount):
@@ -34,7 +36,9 @@ class Game:
     def _get_player_type(cls):
         _type = input('Введите тип игрока:\n'
                       '1 - человек, 2 - компьютер\n')
-        return Valid.player_type(_type, cls._get_player_type)
+        if Valid.player_type(_type):
+            return _type
+        cls._get_player_type()
 
     @staticmethod
     def _create_player(player_type, player_num):
@@ -49,6 +53,10 @@ class Game:
     def _turn(self):
         num = self.bag.get_barrel()
         self._check_cards(num)
+        for player in self._players_list:
+            if player.card.check_lines():
+                print(f'Игрок {player} победил!')
+                sys.exit()
         self._turn()
 
     def _check_cards(self, num):
@@ -80,6 +88,7 @@ class Bag:
         return len(self._nums_list)
 
     def get_barrel(self):
+        # TODO: test it
         barrel = self._nums_list.pop(0)
         try:
             text = NUMS_DICT[str(barrel)]
@@ -109,6 +118,7 @@ class Person(Player):
     def check_card(self, num):
         print(self.card)
         if self._ask():
+            # and num in self.card
             self.card.del_num(num)
         elif num in self.card:
             print(f'{"-" * 35}\n'
@@ -118,12 +128,19 @@ class Person(Player):
                   f'Игрок {self.name} проиграл! Игра окончена!\n'
                   f'{"-" * 35}')
             sys.exit()
+            # TODO: Возвращать true/false и перенести в Game
+            #  вызывать функцию удаления и принты через match-case
 
     @classmethod
     def _ask(cls):
         answer = input('Закрыть номер?\n'
                        'y - да, n - нет:\n')
-        return Valid.answer(answer, cls._ask)
+        if Valid.answer(answer):
+            if answer == 'y':
+                return True
+            elif answer == 'n':
+                return False
+        cls._ask()
 
 
 class Computer(Player):
@@ -131,8 +148,11 @@ class Computer(Player):
         return f'Computer(name={self.name}, card={self.card}'
 
     def check_card(self, num):
+        # TODO: test it
+        # return true
         if num in self.card:
             self.card.del_num(num)
+            # TODO: Возвращать true/false и в Game вызывать функцию удаления
 
 
 class Card:
@@ -143,6 +163,8 @@ class Card:
         self.line1 = sorted(self._nums[:5])
         self.line2 = sorted(self._nums[5:10])
         self.line3 = sorted(self._nums[10:15])
+        # TODO: Если не подаются линии, генерировать как есть
+        #  плюс валидация линий на отсутствие повторений
 
     def __str__(self):
         first_row = '------------ Карточка -------------'
@@ -174,11 +196,10 @@ class Card:
             return True
 
     def check_lines(self):
-        if (len(self.line1) == 0
-                or len(self.line2) == 0
-                or len(self.line3) == 0):
-            print(f'Игрок {self.player} победил!')
-            sys.exit()
+        # TODO: test it
+        return (not self.line1
+                or not self.line2
+                or not self.line3)
 
     def del_num(self, num):
         line = None
@@ -195,6 +216,7 @@ class Card:
             print(f'Игрок {self.player} закрыл {num} на {line}!\n{self}')
             self.check_lines()
         else:
+            # TODO: перенести из этого класса в Game
             print(f'{"-" * 35}\n'
                   f'Игрок {self.player} попытался закрыть {num}!\n'
                   f'Этого числа нет на его карточке!\n'
