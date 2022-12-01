@@ -8,8 +8,6 @@ from validations import Validation as Valid
 class Game:
     def __init__(self):
         self._players_list = self._get_players(self._get_players_amount())
-        for i in self._players_list:
-            print(i)
         self.bag = Bag()
 
     def start(self):
@@ -45,7 +43,7 @@ class Game:
         match player_type:
             case 1:
                 player_name = f'{player_num} - Человек'
-                return Person(player_name)
+                return Player(player_name)
             case 2:
                 player_name = f'{player_num} - Компьютер'
                 return Computer(player_name)
@@ -61,7 +59,31 @@ class Game:
 
     def _check_cards(self, num):
         for player in self._players_list:
-            player.check_card(num)
+            print(player.card)
+            answer = player.ask(num)
+            match answer, num in player.card:
+                case True, True:
+                    player.card.del_num(num)
+                    continue
+                case False, False:
+                    continue
+            match answer:
+                case True:
+                    print(f'{"-" * 35}\n'
+                          f'Игрок {player} попытался закрыть число {num}!\n'
+                          f'Этого числа нет на его карточке!\n'
+                          f'{"-" * 35}\n'
+                          f'Игрок {player} проиграл! Игра окончена!!!'
+                          f'\n{"-" * 35}')
+                    sys.exit()
+                case False:
+                    print(f'{"-" * 35}\n'
+                          f'Игрок {player} не попытался закрыть число {num}!\n'
+                          f'Это число есть на его карточке!\n'
+                          f'{"-" * 35}\n'
+                          f'Игрок {player} проиграл! Игра окончена!\n'
+                          f'{"-" * 35}')
+                    sys.exit()
 
 
 class Bag:
@@ -108,51 +130,26 @@ class Player:
         return f'{self.name}'
 
     def __repr__(self):
-        return f'Player(name={self.name}, card={self.card}'
+        return f'{self.__class__.__name__}(name={self.name}, card={self.card}'
 
-
-class Person(Player):
-    def __repr__(self):
-        return f'Person(name={self.name}, card={self.card}'
-
-    def check_card(self, num):
-        print(self.card)
-        if self._ask():
-            # and num in self.card
-            self.card.del_num(num)
-        elif num in self.card:
-            print(f'{"-" * 35}\n'
-                  f'Игрок {self.name} не попытался закрыть {num}!\n'
-                  f'Это число есть на его карточке!\n'
-                  f'{"-" * 35}\n'
-                  f'Игрок {self.name} проиграл! Игра окончена!\n'
-                  f'{"-" * 35}')
-            sys.exit()
-            # TODO: Возвращать true/false и перенести в Game
-            #  вызывать функцию удаления и принты через match-case
-
-    @classmethod
-    def _ask(cls):
-        answer = input('Закрыть номер?\n'
+    def ask(self, num):
+        answer = input(f'Закрыть номер {num}?\n'
                        'y - да, n - нет:\n')
         if Valid.answer(answer):
             if answer == 'y':
                 return True
-            elif answer == 'n':
-                return False
-        cls._ask()
+            return False
+        self.ask(num)
 
 
 class Computer(Player):
     def __repr__(self):
         return f'Computer(name={self.name}, card={self.card}'
 
-    def check_card(self, num):
-        # TODO: test it
-        # return true
+    def ask(self, num):
         if num in self.card:
-            self.card.del_num(num)
-            # TODO: Возвращать true/false и в Game вызывать функцию удаления
+            return True
+        return False
 
 
 class Card:
@@ -163,12 +160,10 @@ class Card:
         self.line1 = sorted(self._nums[:5])
         self.line2 = sorted(self._nums[5:10])
         self.line3 = sorted(self._nums[10:15])
-        # TODO: Если не подаются линии, генерировать как есть
-        #  плюс валидация линий на отсутствие повторений
 
     def __str__(self):
         first_row = '------------ Карточка -------------'
-        if isinstance(self.player, Person):
+        if isinstance(self.player, Player):
             first_row = f'--- Карточка игрока {self.player} ---'
         if isinstance(self.player, Computer):
             first_row = f'-- Карточка игрока {self.player} --'
@@ -217,12 +212,7 @@ class Card:
             self.check_lines()
         else:
             # TODO: перенести из этого класса в Game
-            print(f'{"-" * 35}\n'
-                  f'Игрок {self.player} попытался закрыть {num}!\n'
-                  f'Этого числа нет на его карточке!\n'
-                  f'{"-" * 35}\n'
-                  f'Игрок {self.player} проиграл! Игра окончена!!!'
-                  f'\n{"-" * 35}')
+
             sys.exit()
 
 
