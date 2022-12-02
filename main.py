@@ -53,8 +53,7 @@ class Game:
         self._check_cards(num)
         for player in self._players_list:
             if player.card.check_lines():
-                print(f'Игрок {player} победил!')
-                sys.exit()
+                self._end_game(player, win=True)
         self._turn()
 
     def _check_cards(self, num):
@@ -67,23 +66,30 @@ class Game:
                     continue
                 case False, False:
                     continue
-            match answer:
-                case True:
-                    print(f'{"-" * 35}\n'
-                          f'Игрок {player} попытался закрыть число {num}!\n'
-                          f'Этого числа нет на его карточке!\n'
-                          f'{"-" * 35}\n'
-                          f'Игрок {player} проиграл! Игра окончена!!!'
-                          f'\n{"-" * 35}')
-                    sys.exit()
-                case False:
-                    print(f'{"-" * 35}\n'
-                          f'Игрок {player} не попытался закрыть число {num}!\n'
-                          f'Это число есть на его карточке!\n'
-                          f'{"-" * 35}\n'
-                          f'Игрок {player} проиграл! Игра окончена!\n'
-                          f'{"-" * 35}')
-                    sys.exit()
+            self._end_game(player, wrong_answer=answer, num=num)
+
+    @staticmethod
+    def _end_game(player, win=False, wrong_answer=None, num=None):
+        if win:
+            print(f'Игрок {player} победил!')
+            sys.exit()
+        if wrong_answer is not None:
+            if wrong_answer:
+                print(f'{"-" * 35}\n'
+                      f'Игрок {player} попытался закрыть число {num}!\n'
+                      f'Этого числа нет на его карточке!\n'
+                      f'{"-" * 35}\n'
+                      f'Игрок {player} проиграл! Игра окончена!!!'
+                      f'\n{"-" * 35}')
+                sys.exit()
+            else:
+                print(f'{"-" * 35}\n'
+                      f'Игрок {player} не попытался закрыть число {num}!\n'
+                      f'Это число есть на его карточке!\n'
+                      f'{"-" * 35}\n'
+                      f'Игрок {player} проиграл! Игра окончена!\n'
+                      f'{"-" * 35}')
+                sys.exit()
 
 
 class Bag:
