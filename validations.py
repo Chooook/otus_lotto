@@ -27,3 +27,11 @@ class Validation:
             return True
         print('Варианты ответа: "y" и "n"')
         return False
+
+
+def num_filter(el):
+    try:
+        int(el)
+        return True
+    except ValueError:
+        return False

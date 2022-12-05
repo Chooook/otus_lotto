@@ -2,24 +2,27 @@ from random import shuffle
 import sys
 
 from numbers_dict import NUMS_DICT
-from validations import Validation as Valid
+from validations import num_filter, Validation as Valid
 
 
 class Game:
     def __init__(self):
-        self._players_list = self._get_players(self._get_players_amount())
+        self._players_list = None
         self.bag = Bag()
 
     def start(self):
+        self._players_list = self._get_players(self._get_players_amount())
         print(f'{"-" * 35}\nИгра начинается!!!\n{"-" * 35}')
         self._turn()
 
     @classmethod
     def _get_players_amount(cls):
-        amount = input('Введите количество игроков (от 2 до 8):\n')
-        if Valid.players_amount(amount):
-            return int(amount)
-        return cls._get_players_amount()
+        amount = None
+        while not amount:
+            amount = input('Введите количество игроков (от 2 до 8):\n')
+            if not Valid.players_amount(amount):
+                amount = None
+        return int(amount)
 
     @classmethod
     def _get_players(cls, amount):
@@ -32,11 +35,13 @@ class Game:
 
     @classmethod
     def _get_player_type(cls):
-        _type = input('Введите тип игрока:\n'
-                      '1 - человек, 2 - компьютер\n')
-        if Valid.player_type(_type):
-            return _type
-        return cls._get_player_type()
+        _type = None
+        while not _type:
+            _type = input('Введите тип игрока:\n'
+                          '1 - человек, 2 - компьютер\n')
+            if not Valid.player_type(_type):
+                _type = None
+        return _type
 
     @staticmethod
     def _create_player(player_type, player_num):
@@ -139,13 +144,15 @@ class Player:
         return f'{self.__class__.__name__}(name={self.name}, card={self.card}'
 
     def ask(self, num):
-        answer = input(f'Закрыть номер {num}?\n'
-                       'y - да, n - нет:\n')
-        if Valid.answer(answer):
-            if answer == 'y':
-                return True
-            return False
-        self.ask(num)
+        answer = None
+        while not answer:
+            answer = input(f'Закрыть номер {num}?\n'
+                           'y - да, n - нет:\n')
+            if not Valid.answer(answer):
+                answer = None
+        if answer == 'y':
+            return True
+        return False
 
 
 class Computer(Player):
@@ -198,9 +205,9 @@ class Card:
 
     def check_lines(self):
         # TODO: test it
-        return (not self.line1
-                or not self.line2
-                or not self.line3)
+        return not (list(filter(num_filter, self.line1)) and
+                    list(filter(num_filter, self.line2)) and
+                    list(filter(num_filter, self.line3)))
 
     def del_num(self, num):
         line = None
