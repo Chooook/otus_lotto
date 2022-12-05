@@ -19,7 +19,7 @@ class Game:
         amount = input('Введите количество игроков (от 2 до 8):\n')
         if Valid.players_amount(amount):
             return int(amount)
-        cls._get_players_amount()
+        return cls._get_players_amount()
 
     @classmethod
     def _get_players(cls, amount):
@@ -36,7 +36,7 @@ class Game:
                       '1 - человек, 2 - компьютер\n')
         if Valid.player_type(_type):
             return _type
-        cls._get_player_type()
+        return cls._get_player_type()
 
     @staticmethod
     def _create_player(player_type, player_num):
