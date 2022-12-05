@@ -1,8 +1,10 @@
-from random import shuffle
+from __future__ import annotations
+
 import sys
+from random import shuffle
 
 from numbers_dict import NUMS_DICT
-from validations import num_filter, Validation as Valid
+from validations import Validation as Valid, num_filter
 
 
 class Game:
@@ -16,7 +18,7 @@ class Game:
         self._turn()
 
     @classmethod
-    def _get_players_amount(cls):
+    def _get_players_amount(cls) -> int:
         amount = None
         while not amount:
             amount = input('Введите количество игроков (от 2 до 8):\n')
@@ -25,7 +27,7 @@ class Game:
         return int(amount)
 
     @classmethod
-    def _get_players(cls, amount):
+    def _get_players(cls, amount) -> list[Player | Computer]:
         players = []
         for player_num in range(1, amount + 1):
             print(f'{player_num} игрок:')
@@ -34,7 +36,7 @@ class Game:
         return players
 
     @classmethod
-    def _get_player_type(cls):
+    def _get_player_type(cls) -> str:
         _type = None
         while not _type:
             _type = input('Введите тип игрока:\n'
@@ -44,7 +46,7 @@ class Game:
         return _type
 
     @staticmethod
-    def _create_player(player_type, player_num):
+    def _create_player(player_type, player_num) -> Player | Computer:
         match player_type:
             case 1:
                 player_name = f'{player_num} - Человек'
@@ -120,7 +122,7 @@ class Bag:
     def __len__(self):
         return len(self._nums_list)
 
-    def get_barrel(self):
+    def get_barrel(self) -> int:
         # TODO: test it
         barrel = self._nums_list.pop(0)
         try:
@@ -143,7 +145,7 @@ class Player:
     def __repr__(self):
         return f'{self.__class__.__name__}(name={self.name}, card={self.card}'
 
-    def ask(self, num):
+    def ask(self, num) -> bool:
         answer = None
         while not answer:
             answer = input(f'Закрыть номер {num}?\n'
@@ -159,7 +161,7 @@ class Computer(Player):
     def __repr__(self):
         return f'Computer(name={self.name}, card={self.card}'
 
-    def ask(self, num):
+    def ask(self, num) -> bool:
         if num in self.card:
             return True
         return False
@@ -203,7 +205,7 @@ class Card:
         if item in self.line3:
             return True
 
-    def check_lines(self):
+    def check_lines(self) -> bool:
         # TODO: test it
         return not (list(filter(num_filter, self.line1)) and
                     list(filter(num_filter, self.line2)) and
