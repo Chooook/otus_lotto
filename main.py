@@ -22,7 +22,10 @@ class Game:
         amount = None
         while not amount:
             amount = input('Введите количество игроков (от 2 до 8):\n')
-            if not Valid.players_amount(amount):
+            try:
+                Valid.players_amount(amount)
+            except ValueError:
+                print('Количество игроков указано неверно!')
                 amount = None
         return int(amount)
 
@@ -41,7 +44,10 @@ class Game:
         while not _type:
             _type = input('Введите тип игрока:\n'
                           '1 - человек, 2 - компьютер\n')
-            if not Valid.player_type(_type):
+            try:
+                Valid.player_type(_type)
+            except ValueError:
+                print('Тип игрока указан неверно!')
                 _type = None
         return _type
 
@@ -150,7 +156,10 @@ class Player:
         while not answer:
             answer = input(f'Закрыть номер {num}?\n'
                            'y - да, n - нет:\n')
-            if not Valid.answer(answer):
+            try:
+                Valid.answer(answer)
+            except ValueError:
+                print('Варианты ответа: "y" и "n"')
                 answer = None
         if answer == 'y':
             return True
