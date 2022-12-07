@@ -129,13 +129,13 @@ class Bag:
         return len(self._nums_list)
 
     def get_barrel(self) -> int:
-        # TODO: test it
         barrel = self._nums_list.pop(0)
         try:
             text = NUMS_DICT[str(barrel)]
-            text = f'{text}! {barrel}\n{"-" * 35}\n{self}\n{"-" * 35}'
         except KeyError:
             text = f'Бочонок номер {barrel}!\n{"-" * 35}\n{self}\n{"-" * 35}'
+        else:
+            text = f'{text}! {barrel}\n{"-" * 35}\n{self}\n{"-" * 35}'
         print(text)
         return barrel
 
