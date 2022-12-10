@@ -75,3 +75,8 @@ def test_num_filter(el, result):
 def test_num_filter(el):
     with raises(TypeError):
         num_filter(el)
+
+
+def test_player_name():
+    with raises(ValueError):
+        Validation.player_name('')

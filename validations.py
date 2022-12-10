@@ -12,6 +12,11 @@ class Validation:
             raise ValueError
 
     @staticmethod
+    def player_name(name):
+        if not name:
+            raise ValueError
+
+    @staticmethod
     def answer(answer):
         if answer != 'y' and answer != 'n':
             raise ValueError
