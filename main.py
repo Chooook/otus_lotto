@@ -9,7 +9,7 @@ from validations import Validation as Valid, num_filter
 
 class Game:
     def __init__(self):
-        self._players_list = None
+        self._players_list = []
         self.bag = Bag()
 
     def start(self):
@@ -29,17 +29,17 @@ class Game:
                 amount = None
         return int(amount)
 
-    @classmethod
-    def _get_players(cls, amount) -> list[Player | Computer]:
+    def _get_players(self, amount) -> list[Player | Computer]:
         players = []
         for player_num in range(1, amount + 1):
             print(f'{player_num} игрок:')
-            player_type = int(cls._get_player_type())
-            players.append(cls._create_player(player_type, player_num))
+            player_type = self._get_player_type()
+            player_args = {'name': self._get_player_name()}
+            players.append(self._create_player(player_type, player_args))
         return players
 
-    @classmethod
-    def _get_player_type(cls) -> str:
+    @staticmethod
+    def _get_player_type() -> type[Player] | type[Computer]:
         _type = None
         while not _type:
             _type = input('Введите тип игрока:\n'
@@ -49,17 +49,29 @@ class Game:
             except ValueError:
                 print('Тип игрока указан неверно!')
                 _type = None
-        return _type
+        match int(_type):
+            case 1:
+                return Player
+            case 2:
+                return Computer
+
+    def _get_player_name(self) -> str:
+        name = None
+        while not name:
+            name = input('Введите имя игрока:\n')
+            try:
+                Valid.player_name(name)
+            except ValueError:
+                print('Имя игрока не может быть пустым!')
+                name = None
+            if name in self._players_list:
+                print('Такой игрок уже существует!')
+                name = None
+        return name
 
     @staticmethod
-    def _create_player(player_type, player_num) -> Player | Computer:
-        match player_type:
-            case 1:
-                player_name = f'{player_num} - Человек'
-                return Player(player_name)
-            case 2:
-                player_name = f'{player_num} - Компьютер'
-                return Computer(player_name)
+    def _create_player(_class, kwargs):
+        return _class(**kwargs)
 
     def _turn(self):
         num = self.bag.get_barrel()
