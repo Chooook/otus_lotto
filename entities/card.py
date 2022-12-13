@@ -1,16 +1,12 @@
-from random import shuffle
-
-from validations import num_filter
+from utils import num_filter
 
 
 class Card:
-    def __init__(self, player=None):
+    def __init__(self, line1, line2, line3, player=None):
         self.player = player
-        self._nums = list(range(1, 91))
-        shuffle(self._nums)
-        self.line1 = sorted(self._nums[:5])
-        self.line2 = sorted(self._nums[5:10])
-        self.line3 = sorted(self._nums[10:15])
+        self.line1 = line1
+        self.line2 = line2
+        self.line3 = line3
 
     def __str__(self):
         first_row = '------------ Карточка -------------'

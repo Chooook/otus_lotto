@@ -1,6 +1,6 @@
 from pytest import fixture
 
-from main import Bag
+from entities import Bag
 
 
 @fixture()

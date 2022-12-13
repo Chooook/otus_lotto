@@ -1,11 +1,11 @@
-from card import Card
-from validations import Validation as Valid
+from factories.card_factory import CardFactory
+from utils import Validation as Valid
 
 
 class Player:
     def __init__(self, name):
         self.name = name
-        self.card = Card(self)
+        self.card = CardFactory.get_card(self)
 
     def __str__(self):
         return f'{self.name}'
@@ -29,15 +29,7 @@ class Player:
 
 
 class Computer(Player):
-    def __repr__(self):
-        return f'Computer(name={self.name}, card={self.card}'
-
     def ask(self, num) -> bool:
         if num in self.card:
             return True
         return False
-
-
-class PlayersMaker:
-    # TODO: сборщик игроков для вынесения сборки в отдельный модуль из Game
-    pass

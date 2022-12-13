@@ -1,4 +1,4 @@
-from tests.fixtures import bag
+from .fixtures import bag
 
 
 def test_bag_get_barrel(bag):

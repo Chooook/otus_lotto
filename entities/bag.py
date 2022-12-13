@@ -1,6 +1,6 @@
 from random import shuffle
 
-from numbers_dict import NUMS_DICT
+from utils import NUMS_DICT
 
 
 class Bag:

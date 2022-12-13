@@ -1,6 +1,6 @@
 from pytest import mark, param, raises
 
-from validations import num_filter, Validation
+from utils import num_filter, Validation
 
 
 @mark.parametrize('num', [
