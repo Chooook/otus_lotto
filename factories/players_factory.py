@@ -55,6 +55,9 @@ class PlayersFactory:
             except ValueError:
                 print('Имя игрока не может быть пустым!')
                 name = None
+            if len(name) > 15:
+                print('Не более 15 символов!')
+                name = None
             if name in players_names:
                 print('Такой игрок уже существует!')
                 name = None
