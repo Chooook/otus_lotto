@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import sys
-from random import shuffle
 
-from numbers_dict import NUMS_DICT
-from validations import Validation as Valid, num_filter
+from bag import Bag
+from players import Computer, Player
+from validations import Validation as Valid
 
 
 class Game:
@@ -115,136 +115,6 @@ class Game:
                       f'Игрок {player} проиграл! Игра окончена!\n'
                       f'{"-" * 35}')
                 sys.exit()
-
-
-class Bag:
-    def __init__(self):
-        self._nums_list = list(range(1, 91))
-        shuffle(self._nums_list)
-
-    def __str__(self):
-        prefix = 'Осталось'
-        postfix = 'бочонков'
-        if len(self) != 11 | 12 | 13 | 14:
-            match len(self) % 10:
-                case 1:
-                    prefix = 'Остался'
-                    postfix = 'бочонок'
-                case 2 | 3 | 4:
-                    postfix = 'бочонка'
-        return f'{prefix} {len(self)} {postfix}'
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __len__(self):
-        return len(self._nums_list)
-
-    def get_barrel(self) -> int:
-        barrel = self._nums_list.pop(0)
-        try:
-            text = NUMS_DICT[str(barrel)]
-        except KeyError:
-            text = f'Бочонок номер {barrel}!\n{"-" * 35}\n{self}\n{"-" * 35}'
-        else:
-            text = f'{text}! {barrel}\n{"-" * 35}\n{self}\n{"-" * 35}'
-        print(text)
-        return barrel
-
-
-class Player:
-    def __init__(self, name):
-        self.name = name
-        self.card = Card(self)
-
-    def __str__(self):
-        return f'{self.name}'
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}(name={self.name}, card={self.card}'
-
-    def ask(self, num) -> bool:
-        answer = None
-        while not answer:
-            answer = input(f'Закрыть номер {num}?\n'
-                           'y - да, n - нет:\n')
-            try:
-                Valid.answer(answer)
-            except ValueError:
-                print('Варианты ответа: "y" и "n"')
-                answer = None
-        if answer == 'y':
-            return True
-        return False
-
-
-class Computer(Player):
-    def __repr__(self):
-        return f'Computer(name={self.name}, card={self.card}'
-
-    def ask(self, num) -> bool:
-        if num in self.card:
-            return True
-        return False
-
-
-class Card:
-    def __init__(self, player):
-        self.player = player
-        self._nums = list(range(1, 91))
-        shuffle(self._nums)
-        self.line1 = sorted(self._nums[:5])
-        self.line2 = sorted(self._nums[5:10])
-        self.line3 = sorted(self._nums[10:15])
-
-    def __str__(self):
-        first_row = '------------ Карточка -------------'
-        if isinstance(self.player, Player):
-            first_row = f'--- Карточка игрока {self.player} ---'
-        if isinstance(self.player, Computer):
-            first_row = f'-- Карточка игрока {self.player} --'
-        line1 = [' ' + i if len(i) < 2 else i for i in map(str, self.line1)]
-        line2 = [' ' + i if len(i) < 2 else i for i in map(str, self.line2)]
-        line3 = [' ' + i if len(i) < 2 else i for i in map(str, self.line3)]
-        return (f'{first_row}\n'
-                f'{"      ".join(line1)}\n'
-                f'{"      ".join(line2)}\n'
-                f'{"      ".join(line3)}\n'
-                f'{"-" * 35}')
-
-    def __repr__(self):
-        return (f'Card(player={self.player}, '
-                f'line1={self.line1}, '
-                f'line2={self.line2}, '
-                f'line3={self.line3})')
-
-    def __contains__(self, item):
-        if item in self.line1:
-            return True
-        if item in self.line2:
-            return True
-        if item in self.line3:
-            return True
-
-    def check_lines(self) -> bool:
-        # TODO: test it
-        return not (list(filter(num_filter, self.line1)) and
-                    list(filter(num_filter, self.line2)) and
-                    list(filter(num_filter, self.line3)))
-
-    def del_num(self, num):
-        line = None
-        if num in self.line1:
-            self.line1[self.line1.index(num)] = '--'
-            line = 'линии 1'
-        elif num in self.line2:
-            self.line2[self.line2.index(num)] = '--'
-            line = 'линии 2'
-        elif num in self.line3:
-            self.line3[self.line3.index(num)] = '--'
-            line = 'линии 3'
-        if line:
-            print(f'Игрок {self.player} закрыл {num} на {line}!\n{self}')
 
 
 if __name__ == '__main__':
