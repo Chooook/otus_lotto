@@ -11,8 +11,11 @@ class Card:
     def __str__(self):
         first_row = '------------ Карточка -------------'
         if self.player:
-            # TODO: добавить подсчет "-" символов до и после имени
-            first_row = f'--- Карточка игрока {self.player} ---'
+            dashes_amount = ((17 - len(self.player.name)) // 2)
+            end_dash = '-' if len(self.player.name) % 2 == 0 else ''
+            first_row = (f'{"-" * dashes_amount}'
+                         f' Карточка игрока {self.player}'
+                         f' {"-" * dashes_amount}{end_dash}')
         line1 = [' ' + i if len(i) < 2 else i for i in map(str, self.line1)]
         line2 = [' ' + i if len(i) < 2 else i for i in map(str, self.line2)]
         line3 = [' ' + i if len(i) < 2 else i for i in map(str, self.line3)]
